@@ -1,12 +1,14 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
+import { createContext } from '../../graphql/context';
 import { resolvers } from '../../graphql/resolvers';
-import { typeDefs } from '../../graphql/schema';
+import { schema } from '../../graphql/schema';
 
 
 const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers
+    schema,
+    resolvers,
+    context: createContext
 });
 
 const startServer = apolloServer.start();
