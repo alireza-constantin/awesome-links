@@ -1,10 +1,10 @@
 import { makeSchema } from "nexus";
 import { join } from "path";
-import { Link } from './types/Link'
+import { Link, LinksQuery } from './types/Link'
 import { User } from './types/User'
 
 export const schema = makeSchema({
-    types: [Link, User],
+    types: [Link, User, LinksQuery],
     outputs: {
         typegen: join(
             process.cwd(), "graphql", "nexus-typegen.ts"

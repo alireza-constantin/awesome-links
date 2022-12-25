@@ -37,7 +37,7 @@ export interface NexusGenObjects {
     index?: number | null; // Int
     title?: string | null; // String
     url?: string | null; // String
-    userId?: number | null; // Int
+    userId?: string | null; // String
   }
   Query: {};
   User: { // root type
@@ -68,10 +68,10 @@ export interface NexusGenFieldTypes {
     index: number | null; // Int
     title: string | null; // String
     url: string | null; // String
-    userId: number | null; // Int
+    userId: string | null; // String
   }
   Query: { // field return type
-    ok: boolean; // Boolean!
+    links: Array<NexusGenRootTypes['Link'] | null>; // [Link]!
   }
   User: { // field return type
     email: string | null; // String
@@ -91,10 +91,10 @@ export interface NexusGenFieldTypeNames {
     index: 'Int'
     title: 'String'
     url: 'String'
-    userId: 'Int'
+    userId: 'String'
   }
   Query: { // field return type name
-    ok: 'Boolean'
+    links: 'Link'
   }
   User: { // field return type name
     email: 'String'

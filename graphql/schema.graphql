@@ -10,11 +10,11 @@ type Link {
   index: Int
   title: String
   url: String
-  userId: Int
+  userId: String
 }
 
 type Query {
-  ok: Boolean!
+  links: [Link]!
 }
 
 enum Role {
