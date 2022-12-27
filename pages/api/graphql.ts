@@ -1,13 +1,40 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
-import { createContext } from '../../graphql/context';
-import { resolvers } from '../../graphql/resolvers';
-import { schema } from '../../graphql/schema';
+import SchemaBuilder from '@pothos/core';
+import validationPlugin from '@pothos/plugin-validation';
+import { GraphQLError } from 'graphql'
+
+import { helloNameSchema } from '../../schema';
+
+
+const builder = new SchemaBuilder({
+    plugins: [validationPlugin],
+    validationOptions: {
+        validationError: (ZodError, _args, _context, _info) => {
+            throw new GraphQLError('validate', { extensions: { code: 'validation failed', error: ZodError.format() } })
+        }
+    }
+});
+
+builder.queryType({
+    fields: t => ({
+        hello: t.string({
+            args: {
+                name: t.arg.string({
+                    required: true,
+                    validate: {
+                        schema: helloNameSchema
+                    }
+                }),
+            },
+            resolve: (_parent, args) => `hello ${args.name}`
+        })
+    })
+})
 
 
 const apolloServer = new ApolloServer({
-    schema,
-    context: createContext
+    schema: builder.toSchema(),
 });
 
 const startServer = apolloServer.start();
