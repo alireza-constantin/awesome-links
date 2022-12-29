@@ -1,17 +1,26 @@
-import { useSession, signIn, signOut } from 'next-auth/react';
 import Head from 'next/head';
+import { useQuery } from 'urql';
+import Layout from '../components/Layout';
 
-type Link = {
-	id: string;
-	title: string;
-	url: string;
-	imageUrl: string;
-	description: string;
-	category: string;
-};
+const TodosQuery = `
+  query {
+    hello
+  }
+`;
+
+// type Link = {
+// 	id: string;
+// 	title: string;
+// 	url: string;
+// 	imageUrl: string;
+// 	description: string;
+// 	category: string;
+// };
 
 export default function Home() {
-	const { data: session } = useSession();
+	const [result, reexecuteQuery] = useQuery({
+		query: TodosQuery,
+	});
 
 	return (
 		<div>
@@ -19,23 +28,10 @@ export default function Home() {
 				<title>Awesome Links</title>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-
-			<div className="container mx-auto max-w-5xl my-20">
-				<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-					{session ? (
-						<>
-							<div className="text-2xl font-bold">{session.user?.name}</div>
-							Signed in as {session.user?.email} <br />
-							<button onClick={() => signOut()}>Sign out</button>
-						</>
-					) : (
-						<>
-							Not signed in <br />
-							<button onClick={() => signIn()}>Sign in</button>
-						</>
-					)}
-
-					{/* {links.map((link: Link) => (
+			<Layout>
+				<div className="container mx-auto max-w-5xl my-20">
+					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+						{/* {links.map((link: Link) => (
 						<li key={link.id} className="shadow  max-w-md  rounded">
 							<img className="shadow-sm" src={link.imageUrl} />
 							<div className="p-5 flex flex-col space-y-2">
@@ -57,8 +53,9 @@ export default function Home() {
 							</div>
 						</li>
 					))} */}
-				</ul>
-			</div>
+					</ul>
+				</div>
+			</Layout>
 		</div>
 	);
 }

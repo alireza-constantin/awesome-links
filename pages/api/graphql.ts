@@ -5,6 +5,12 @@ import validationPlugin from '@pothos/plugin-validation';
 import { GraphQLError } from 'graphql'
 
 import { helloNameSchema } from '../../types/schema';
+import { Session } from 'next-auth';
+import { getServerAuthSession } from '../../lib/get-serverside-session';
+
+type myContext = {
+    auth: Session | null
+}
 
 
 const builder = new SchemaBuilder({
@@ -19,15 +25,18 @@ const builder = new SchemaBuilder({
 builder.queryType({
     fields: t => ({
         hello: t.string({
-            args: {
-                name: t.arg.string({
-                    required: true,
-                    validate: {
-                        schema: helloNameSchema
-                    }
-                }),
-            },
-            resolve: (_parent, args) => `hello ${args.name}`
+            // args: {
+            //     name: t.arg.string({
+            //         required: true,
+            //         validate: {
+            //             schema: helloNameSchema
+            //         }
+            //     }),
+            // },
+            resolve: (_parent, args, ctx) => {
+                console.log(ctx)
+                return `hello heeeyo`
+            }
         })
     })
 })
@@ -35,6 +44,9 @@ builder.queryType({
 
 const apolloServer = new ApolloServer({
     schema: builder.toSchema(),
+    context: async ({ req, res }) => ({
+        auth: await getServerAuthSession({ req, res })
+    })
 });
 
 const startServer = apolloServer.start();

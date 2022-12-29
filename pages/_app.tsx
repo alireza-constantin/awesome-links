@@ -1,15 +1,16 @@
 import '../styles/tailwind.css';
-import Layout from '../components/Layout';
 import type { AppProps } from 'next/app';
 import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
+import { Provider } from 'urql';
+import { client } from '../lib/urql';
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session | null }>) {
 	return (
 		<SessionProvider session={pageProps.session}>
-			<Layout>
+			<Provider value={client}>
 				<Component {...pageProps} />
-			</Layout>
+			</Provider>
 		</SessionProvider>
 	);
 }
