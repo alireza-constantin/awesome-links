@@ -7,6 +7,20 @@ const TodosQuery = `
   }
 `;
 
+const LinksQuery = `
+  query {
+    links {
+		id
+		title
+		description
+		url
+		imageUrl
+		category
+		userId
+	}
+  }
+`;
+
 // type Link = {
 // 	id: string;
 // 	title: string;
@@ -18,14 +32,14 @@ const TodosQuery = `
 
 export default function Home() {
 	const [result, reexecuteQuery] = useQuery({
-		query: TodosQuery,
+		query: LinksQuery,
 	});
 
 	return (
 		<Layout>
 			<div className="container mx-auto max-w-5xl my-20">
 				<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-					<div>{result?.data?.hello}</div>
+					<div>{JSON.stringify(result?.data?.links)}</div>
 					{/* {links.map((link: Link) => (
 						<li key={link.id} className="shadow  max-w-md  rounded">
 							<img className="shadow-sm" src={link.imageUrl} />

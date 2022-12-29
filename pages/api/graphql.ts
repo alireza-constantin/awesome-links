@@ -6,6 +6,8 @@ import { GraphQLError } from 'graphql'
 import { Session } from 'next-auth';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import { getServerAuthSession } from '../../lib/get-serverside-session';
+import { Link } from '@prisma/client';
+import { prisma } from '../../lib/prisma';
 
 type myContext = {
     auth: Session | null
@@ -24,10 +26,24 @@ const builder = new SchemaBuilder<{
         }
     },
     authScopes: async (context) => {
-        console.log('from auth scope:', context)
-        return { private: !!context.auth?.user }
+        const { auth } = context as myContext;
+        return { private: !!auth?.user }
     }
 });
+
+const LinkObject = builder.objectRef<Link>('Link')
+
+LinkObject.implement({
+    fields: (t) => ({
+        id: t.exposeID('id'),
+        title: t.exposeString('title'),
+        description: t.exposeString('description'),
+        url: t.exposeString('url'),
+        imageUrl: t.exposeString('imageUrl'),
+        category: t.exposeString('category'),
+        userId: t.exposeString('userId')
+    })
+})
 
 builder.queryType({
     fields: t => ({
@@ -43,9 +59,23 @@ builder.queryType({
             authScopes: {
                 private: true
             },
-            resolve: (_parent, args, ctx) => {
+            resolve: (_parent, _args, ctx) => {
                 console.log(ctx)
                 return `hello heeeyo`
+            }
+        }),
+        links: t.field({
+            type: [LinkObject],
+            // authScopes: {
+            //     private: true
+            // },
+            resolve: (_parent, _args, ctx) => {
+                const { auth } = ctx as myContext;
+                return prisma.link.findMany({
+                    where: {
+                        userId: auth?.user?.id
+                    }
+                })
             }
         })
     })

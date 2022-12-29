@@ -6,7 +6,7 @@ export const links = [
     imageUrl: "https://nextjs.org/static/twitter-cards/home.jpg",
     title: "Next.js",
     url: "https://nextjs.org",
-    userId: "c854b032-3884-47d3-80c7-9bb00b1c6ffa"
+    userId: "f23d0e5c-c83a-4e88-b2df-6e9e19b100ae"
   },
   {
     category: "Open Source",
@@ -15,7 +15,7 @@ export const links = [
     imageUrl: "https://www.prisma.io/images/og-image.png",
     title: "Prisma",
     url: "https://prisma.io",
-    userId: "c854b032-3884-47d3-80c7-9bb00b1c6ffa"
+    userId: "f23d0e5c-c83a-4e88-b2df-6e9e19b100ae"
   },
   {
     category: "Open Source",
@@ -25,7 +25,7 @@ export const links = [
       "https://tailwindcss.com/_next/static/media/twitter-large-card.85c0ff9e455da585949ff0aa50981857.jpg",
     title: "TailwindCSS",
     url: "https://tailwindcss.com",
-    userId: "c854b032-3884-47d3-80c7-9bb00b1c6ffa"
+    userId: "f23d0e5c-c83a-4e88-b2df-6e9e19b100ae"
   },
   {
     category: "Open Source",
@@ -34,6 +34,6 @@ export const links = [
     imageUrl: "https://www.apollographql.com/apollo-home.jpg",
     title: "Apollo GraphQL",
     url: "https://apollographql.com",
-    userId: "c854b032-3884-47d3-80c7-9bb00b1c6ffa"
-  },
+    userId: "f23d0e5c-c83a-4e88-b2df-6e9e19b100ae"
+  }
 ];
