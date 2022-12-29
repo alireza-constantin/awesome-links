@@ -4,7 +4,7 @@ import SchemaBuilder from '@pothos/core';
 import validationPlugin from '@pothos/plugin-validation';
 import { GraphQLError } from 'graphql'
 
-import { helloNameSchema } from '../../schema';
+import { helloNameSchema } from '../../types/schema';
 
 
 const builder = new SchemaBuilder({
