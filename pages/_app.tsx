@@ -1,6 +1,6 @@
 import '../styles/tailwind.css';
 import type { AppProps } from 'next/app';
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider, useSession } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import { Provider } from 'urql';
 import { client } from '../lib/urql';
