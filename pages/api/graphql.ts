@@ -3,9 +3,8 @@ import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 import SchemaBuilder from '@pothos/core';
 import validationPlugin from '@pothos/plugin-validation';
 import { GraphQLError } from 'graphql'
-
-import { helloNameSchema } from '../../types/schema';
 import { Session } from 'next-auth';
+import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import { getServerAuthSession } from '../../lib/get-serverside-session';
 
 type myContext = {
@@ -13,12 +12,20 @@ type myContext = {
 }
 
 
-const builder = new SchemaBuilder({
-    plugins: [validationPlugin],
+const builder = new SchemaBuilder<{
+    AuthScopes: {
+        private: boolean
+    }
+}>({
+    plugins: [validationPlugin, ScopeAuthPlugin],
     validationOptions: {
         validationError: (ZodError, _args, _context, _info) => {
             throw new GraphQLError('validate', { extensions: { code: 'validation failed', error: ZodError.format() } })
         }
+    },
+    authScopes: async (context) => {
+        console.log('from auth scope:', context)
+        return { private: !!context.auth?.user }
     }
 });
 
@@ -33,6 +40,9 @@ builder.queryType({
             //         }
             //     }),
             // },
+            authScopes: {
+                private: true
+            },
             resolve: (_parent, args, ctx) => {
                 console.log(ctx)
                 return `hello heeeyo`

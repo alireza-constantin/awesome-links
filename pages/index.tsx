@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import { useQuery } from 'urql';
 import Layout from '../components/Layout';
 
@@ -26,6 +25,7 @@ export default function Home() {
 		<Layout>
 			<div className="container mx-auto max-w-5xl my-20">
 				<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+					<div>{result?.data?.hello}</div>
 					{/* {links.map((link: Link) => (
 						<li key={link.id} className="shadow  max-w-md  rounded">
 							<img className="shadow-sm" src={link.imageUrl} />

@@ -5,12 +5,12 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 const Header = () => {
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 
 	const router = useRouter();
 
 	useEffect(() => {
-		if (!session) {
+		if (!session && status !== 'loading') {
 			router.push('/register');
 		}
 	}, [session]);
@@ -42,7 +42,9 @@ const Header = () => {
 						</a>
 					</Link>
 					<div>
-						<p className="text-lg font-medium capitalize">Hi {session?.user?.name}</p>
+						<p className="text-lg font-medium capitalize">
+							Hi {status === 'loading' ? <span className="animate-bounce">...</span> : session?.user?.name}
+						</p>
 					</div>
 					<nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
 						<div className="flex items-center space-x-5">
