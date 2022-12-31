@@ -3,18 +3,16 @@ import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 import SchemaBuilder from '@pothos/core';
 import validationPlugin from '@pothos/plugin-validation';
 import { GraphQLError } from 'graphql'
-import { Session } from 'next-auth';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import { getServerAuthSession } from '../../lib/get-serverside-session';
-import { Link } from '@prisma/client';
-import { prisma } from '../../lib/prisma';
-
-type myContext = {
-    auth: Session | null
-}
+import { myContext } from '../../types/context';
 
 
-const builder = new SchemaBuilder<{
+
+export const builder = new SchemaBuilder<{
+    Context: {
+        auth: myContext
+    },
     AuthScopes: {
         private: boolean
     }
@@ -26,60 +24,11 @@ const builder = new SchemaBuilder<{
         }
     },
     authScopes: async (context) => {
-        const { auth } = context as myContext;
+        const { auth } = context;
         return { private: !!auth?.user }
     }
 });
 
-const LinkObject = builder.objectRef<Link>('Link')
-
-LinkObject.implement({
-    fields: (t) => ({
-        id: t.exposeID('id'),
-        title: t.exposeString('title'),
-        description: t.exposeString('description'),
-        url: t.exposeString('url'),
-        imageUrl: t.exposeString('imageUrl'),
-        category: t.exposeString('category'),
-        userId: t.exposeString('userId')
-    })
-})
-
-builder.queryType({
-    fields: t => ({
-        hello: t.string({
-            // args: {
-            //     name: t.arg.string({
-            //         required: true,
-            //         validate: {
-            //             schema: helloNameSchema
-            //         }
-            //     }),
-            // },
-            authScopes: {
-                private: true
-            },
-            resolve: (_parent, _args, ctx) => {
-                console.log(ctx)
-                return `hello heeeyo`
-            }
-        }),
-        links: t.field({
-            type: [LinkObject],
-            // authScopes: {
-            //     private: true
-            // },
-            resolve: (_parent, _args, ctx) => {
-                const { auth } = ctx as myContext;
-                return prisma.link.findMany({
-                    where: {
-                        userId: auth?.user?.id
-                    }
-                })
-            }
-        })
-    })
-})
 
 
 const apolloServer = new ApolloServer({
