@@ -1,4 +1,15 @@
-export const AwesomeLink = ({ imageUrl, url, title, category, description, id }) => {
+import React from 'react';
+
+type PropType = {
+	imageUrl: string;
+	url: string;
+	title: string;
+	category: string;
+	description: string;
+	id: string;
+};
+
+export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category, description, id }) => {
 	return (
 		<div key={id} className="shadow  max-w-md  rounded">
 			<img src={imageUrl} />
@@ -7,7 +18,6 @@ export const AwesomeLink = ({ imageUrl, url, title, category, description, id })
 				<p className="text-lg font-medium">{title}</p>
 				<p className="text-gray-600">{description}</p>
 				<a href={url} className="flex hover:text-blue-500">
-					{/* removes https from url */}
 					{url.replace(/(^\w+:|^)\/\//, '')}
 					<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 						<path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>

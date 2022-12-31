@@ -1,38 +1,11 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { NextApiRequest, NextApiResponse, PageConfig } from 'next';
-import SchemaBuilder from '@pothos/core';
-import validationPlugin from '@pothos/plugin-validation';
-import { GraphQLError } from 'graphql'
-import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
+import { schema } from '../../graphql/schema';
 import { getServerAuthSession } from '../../lib/get-serverside-session';
-import { myContext } from '../../types/context';
-
-
-
-export const builder = new SchemaBuilder<{
-    Context: {
-        auth: myContext
-    },
-    AuthScopes: {
-        private: boolean
-    }
-}>({
-    plugins: [validationPlugin, ScopeAuthPlugin],
-    validationOptions: {
-        validationError: (ZodError, _args, _context, _info) => {
-            throw new GraphQLError('validate', { extensions: { code: 'validation failed', error: ZodError.format() } })
-        }
-    },
-    authScopes: async (context) => {
-        const { auth } = context;
-        return { private: !!auth?.user }
-    }
-});
-
 
 
 const apolloServer = new ApolloServer({
-    schema: builder.toSchema(),
+    schema,
     context: async ({ req, res }) => ({
         auth: await getServerAuthSession({ req, res })
     })
