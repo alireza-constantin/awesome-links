@@ -1,12 +1,8 @@
+import Link from 'next/link';
 import { useQuery } from 'urql';
 import { AwesomeLink } from '../components/AwesomeLink';
 import Layout from '../components/Layout';
-
-const TodosQuery = `
-  query {
-    hello
-  }
-`;
+import { BiPlus } from 'react-icons/bi';
 
 const LinksQuery = `
   query {
@@ -51,6 +47,13 @@ export default function Home() {
 						/>
 					))}
 				</ul>
+			</div>
+			<div className="sticky bottom-10 flex justify-end items-center mr-12">
+				<Link href={'/create-link'}>
+					<div className="bg-blue-600 hover:bg-blue-400 rounded-full p-2 cursor-pointer">
+						<BiPlus size={28} className="text-white " />
+					</div>
+				</Link>
 			</div>
 		</Layout>
 	);

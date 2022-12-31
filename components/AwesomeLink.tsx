@@ -11,7 +11,7 @@ type PropType = {
 
 export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category, description, id }) => {
 	return (
-		<div key={id} className="shadow  max-w-md  rounded">
+		<li key={id} className="shadow  max-w-md  rounded">
 			<img src={imageUrl} />
 			<div className="p-5 flex flex-col space-y-2">
 				<p className="text-sm text-blue-500">{category}</p>
@@ -25,6 +25,6 @@ export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category
 					</svg>
 				</a>
 			</div>
-		</div>
+		</li>
 	);
 };
