@@ -1,8 +1,12 @@
+import Layout from '../components/Layout';
+
 import Link from 'next/link';
 import { useQuery } from 'urql';
 import { AwesomeLink } from '../components/AwesomeLink';
-import Layout from '../components/Layout';
 import { BiPlus } from 'react-icons/bi';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useState } from 'react';
+import { CreateLink } from '../components/CreateLink';
 
 const LinksQuery = `
   query {
@@ -28,9 +32,19 @@ type Link = {
 };
 
 export default function Home() {
+	const [isOpen, setIsOpen] = useState(false);
+
 	const [result, reexecuteQuery] = useQuery({
 		query: LinksQuery,
 	});
+
+	function closeModal() {
+		setIsOpen(false);
+	}
+
+	function openModal() {
+		setIsOpen(true);
+	}
 
 	return (
 		<Layout>
@@ -49,12 +63,11 @@ export default function Home() {
 				</ul>
 			</div>
 			<div className="sticky bottom-10 flex justify-end items-center mr-12">
-				<Link href={'/create-link'}>
-					<div className="bg-blue-600 hover:bg-blue-400 rounded-full p-2 cursor-pointer">
-						<BiPlus size={28} className="text-white " />
-					</div>
-				</Link>
+				<div onClick={openModal} className="bg-blue-600 hover:bg-blue-400 rounded-full p-2 cursor-pointer">
+					<BiPlus size={28} className="text-white " />
+				</div>
 			</div>
+			<CreateLink isOpen={isOpen} closeModal={closeModal} />
 		</Layout>
 	);
 }
