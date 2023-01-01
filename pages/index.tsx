@@ -1,11 +1,10 @@
 import Layout from '../components/Layout';
+import { Link } from '../types/types';
 
-import Link from 'next/link';
 import { useQuery } from 'urql';
 import { AwesomeLink } from '../components/AwesomeLink';
 import { BiPlus } from 'react-icons/bi';
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { CreateLink } from '../components/CreateLink';
 
 const LinksQuery = `
@@ -21,15 +20,6 @@ const LinksQuery = `
 	}
   }
 `;
-
-type Link = {
-	id: string;
-	title: string;
-	url: string;
-	imageUrl: string;
-	description: string;
-	category: string;
-};
 
 export default function Home() {
 	const [isOpen, setIsOpen] = useState(false);

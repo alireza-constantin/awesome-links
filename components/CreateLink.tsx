@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinkSchema } from '../types/schema';
 import z from 'zod';
+import { useMutation } from 'urql';
+import { Link } from '../types/types';
 
 type PropType = { isOpen: boolean; closeModal: () => void };
 const labelClasses =
@@ -11,7 +13,25 @@ const labelClasses =
 
 type InputType = z.infer<typeof LinkSchema>;
 
+const CreateLinkMutation = `
+mutation($input: LinkInput!) {
+	createLink(input: $input) {
+	  userId
+	  url
+	  title
+	  imageUrl
+	  id
+	  description
+	  category
+	}
+  }
+`;
+
+type createLinkVar = { input: InputType };
+
 export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
+	const [{ data }, createLink] = useMutation<Link, createLinkVar>(CreateLinkMutation);
+
 	const {
 		register,
 		handleSubmit,
@@ -20,7 +40,19 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 		resolver: zodResolver(LinkSchema),
 	});
 
-	const onSubmit = (data: InputType) => console.log(data);
+	const onSubmit = async (data: InputType) => {
+		const res = await createLink({
+			input: {
+				...data,
+			},
+		});
+		if (res.error) {
+			const errors = res.error.graphQLErrors[0].extensions;
+			console.log(errors);
+		} else {
+			if (res.data) closeModal();
+		}
+	};
 
 	return (
 		<Transition appear show={isOpen} as={Fragment}>

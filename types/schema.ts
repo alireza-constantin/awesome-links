@@ -19,4 +19,4 @@ export const LinkSchema = z.object({
         required_error: 'category is required',
         invalid_type_error: 'category must be string'
     }).min(1, { message: 'Category can not be empty' })
-}).required()
+})

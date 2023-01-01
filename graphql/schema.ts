@@ -104,10 +104,11 @@ builder.mutationType({
             args: {
                 input: t.arg({ type: LinkInput, required: true })
             },
-            authScopes: {
-                private: true
-            },
+            // authScopes: {
+            //     private: true
+            // },
             resolve: async (_root, args, ctx) => {
+                console.log('reaching here')
                 if (!ctx.auth?.user) throw new Error('Not Authorized')
                 const link = await prisma.link.create({
                     data: {
