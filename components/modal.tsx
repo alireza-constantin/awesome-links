@@ -5,9 +5,10 @@ type PropType = {
 	children: ReactNode;
 	isOpen: boolean;
 	closeModal: () => void;
+	title: string;
 };
 
-export const Modal: FC<PropType> = ({ children, closeModal, isOpen }) => {
+export const Modal: FC<PropType> = ({ children, closeModal, isOpen, title }) => {
 	return (
 		<Transition appear show={isOpen} as={Fragment}>
 			<Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -36,7 +37,7 @@ export const Modal: FC<PropType> = ({ children, closeModal, isOpen }) => {
 						>
 							<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
 								<Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-600 text-center">
-									CREATE A LINK
+									{title}
 								</Dialog.Title>
 								{children}
 							</Dialog.Panel>

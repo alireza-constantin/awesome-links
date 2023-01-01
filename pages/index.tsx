@@ -42,6 +42,7 @@ export default function Home() {
 				<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 					{result?.data?.links.map((link: Link) => (
 						<AwesomeLink
+							reexecuteQuery={reexecuteQuery}
 							category={link.category}
 							description={link.description}
 							id={link.id}

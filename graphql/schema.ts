@@ -104,12 +104,12 @@ builder.mutationType({
             args: {
                 input: t.arg({ type: LinkInput, required: true })
             },
-            // authScopes: {
-            //     private: true
-            // },
+            authScopes: {
+                private: true
+            },
             resolve: async (_root, args, ctx) => {
                 console.log('reaching here')
-                if (!ctx.auth?.user) throw new Error('Not Authorized')
+                if (!ctx.auth?.user) throw new GraphQLError('Not Authorized')
                 const link = await prisma.link.create({
                     data: {
                         userId: ctx.auth?.user?.id,
@@ -119,7 +119,37 @@ builder.mutationType({
 
                 return link
             }
+        }),
+        deleteLink: t.boolean({
+            args: {
+                id: t.arg.string({ required: true })
+            },
+            authScopes: {
+                private: true
+            },
+            resolve: async (_root, { id }, { auth }) => {
+                const link = await prisma.link.findUnique({
+                    where: {
+                        id
+                    }
+                })
+
+                if (link?.userId !== auth?.user?.id) throw new GraphQLError('Not Authorized')
+
+                try {
+                    await prisma.link.delete({
+                        where: {
+                            id
+                        }
+                    })
+                    return true
+                } catch (error) {
+                    throw new GraphQLError('some thing went wrong please try again')
+                    console.log(error)
+                }
+            }
         })
+
     })
 })
 

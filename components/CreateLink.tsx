@@ -9,7 +9,7 @@ import { Modal } from './modal';
 
 type InputType = z.infer<typeof LinkSchema>;
 
-const CreateLinkMutation = `
+const CreateLinkMutation = `#graphql
 mutation($input: LinkInput!) {
 	createLink(input: $input) {
 	  userId
@@ -32,6 +32,7 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 	const {
 		register,
 		handleSubmit,
+		reset,
 		formState: { errors },
 	} = useForm<InputType>({
 		resolver: zodResolver(LinkSchema),
@@ -43,6 +44,7 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 				...data,
 			},
 		});
+		reset();
 		if (res.error) {
 			const errors = res.error.graphQLErrors[0].extensions;
 			console.log(errors);
@@ -52,11 +54,11 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 	};
 
 	return (
-		<Modal isOpen={isOpen} closeModal={closeModal}>
+		<Modal title="Create A Link" isOpen={isOpen} closeModal={closeModal}>
 			<form className="mt-4" onSubmit={handleSubmit(onSubmit)}>
 				<div className="flex flex-col gap-8">
 					{fields.map((field) => (
-						<FormGroup name={field} error={errors[field]?.message} register={register(field)} />
+						<FormGroup key={field} name={field} error={errors[field]?.message} register={register(field)} />
 					))}
 					<button
 						type="submit"

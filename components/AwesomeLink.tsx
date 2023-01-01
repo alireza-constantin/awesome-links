@@ -1,4 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { OperationContext, useMutation } from 'urql';
+import { FiExternalLink, FiArchive } from 'react-icons/fi';
+import { Modal } from './modal';
+
+const DeleteLinkMutation = `#graphql
+	mutation ($id: String!) {
+		deleteLink(id: $id)
+	}
+`;
 
 type PropType = {
 	imageUrl: string;
@@ -7,24 +16,65 @@ type PropType = {
 	category: string;
 	description: string;
 	id: string;
+	reexecuteQuery: (opts?: Partial<OperationContext> | undefined) => void;
 };
 
-export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category, description, id }) => {
+export const AwesomeLink: React.FC<PropType> = ({
+	imageUrl,
+	url,
+	title,
+	category,
+	description,
+	id,
+	reexecuteQuery,
+}) => {
+	const [_, deleteLink] = useMutation<boolean, { id: string }>(DeleteLinkMutation);
+
+	const [isOpen, setIsOpen] = useState(false);
+
+	function closeModal() {
+		setIsOpen(false);
+	}
+
+	function openModal() {
+		setIsOpen(true);
+	}
+
+	async function onDelete() {
+		try {
+			await deleteLink({ id });
+			reexecuteQuery({ requestPolicy: 'cache-and-network' });
+			closeModal();
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
-		<li key={id} className="shadow  max-w-md  rounded">
+		<li className="shadow  max-w-md  rounded">
 			<img src={imageUrl} />
 			<div className="p-5 flex flex-col space-y-2">
-				<p className="text-sm text-blue-500">{category}</p>
+				<div className="flex justify-between items-center">
+					<p className="text-sm text-blue-500">{category}</p>
+					<FiArchive size={20} onClick={openModal} className="text-red-400 cursor-pointer" />
+				</div>
 				<p className="text-lg font-medium">{title}</p>
 				<p className="text-gray-600">{description}</p>
-				<a href={url} className="flex hover:text-blue-500">
+				<a href={url} target="_blank" className="flex hover:text-blue-500">
 					{url.replace(/(^\w+:|^)\/\//, '')}
-					<svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-						<path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"></path>
-						<path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"></path>
-					</svg>
+					<FiExternalLink size={22} />
 				</a>
 			</div>
+			<Modal isOpen={isOpen} closeModal={closeModal} title="Are you sure you want to delete?">
+				<div className="flex justify-between items-center w-full gap-2 mt-6">
+					<button onClick={closeModal} className="bg-green-400 text-white font-semibold flex-1 py-2 rounded-lg">
+						No
+					</button>
+					<button onClick={onDelete} className="bg-red-400 text-white font-semibold flex-1 py-2 rounded-lg">
+						Yes
+					</button>
+				</div>
+			</Modal>
 		</li>
 	);
 };
