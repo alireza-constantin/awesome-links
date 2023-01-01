@@ -51,8 +51,8 @@ export const AwesomeLink: React.FC<PropType> = ({
 	}
 
 	return (
-		<li className="shadow  max-w-md  rounded">
-			<img src={imageUrl} />
+		<li className="shadow  max-w-md mx-auto  rounded">
+			<img src={imageUrl} className="aspect-auto" />
 			<div className="p-5 flex flex-col space-y-2">
 				<div className="flex justify-between items-center">
 					<p className="text-sm text-blue-500">{category}</p>
@@ -60,9 +60,9 @@ export const AwesomeLink: React.FC<PropType> = ({
 				</div>
 				<p className="text-lg font-medium">{title}</p>
 				<p className="text-gray-600">{description}</p>
-				<a href={url} target="_blank" className="flex hover:text-blue-500">
-					{url.replace(/(^\w+:|^)\/\//, '')}
-					<FiExternalLink size={22} />
+				<a href={url} target="_blank" className="flex justify-between hover:text-blue-500">
+					<p>{url.replace(/(^\w+:|^)\/\//, '')}</p>
+					<FiExternalLink size={20} className="w-10 min-w-fit" />
 				</a>
 			</div>
 			<Modal isOpen={isOpen} closeModal={closeModal} title="Are you sure you want to delete?">

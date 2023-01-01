@@ -44,11 +44,11 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 				...data,
 			},
 		});
-		reset();
 		if (res.error) {
 			const errors = res.error.graphQLErrors[0].extensions;
 			console.log(errors);
 		} else {
+			reset();
 			closeModal();
 		}
 	};

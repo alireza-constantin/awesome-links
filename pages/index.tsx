@@ -49,6 +49,7 @@ export default function Home() {
 							imageUrl={link.imageUrl}
 							title={link.title}
 							url={link.url}
+							key={link.id}
 						/>
 					))}
 				</ul>
