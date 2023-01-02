@@ -6,6 +6,7 @@ import { AwesomeLink } from '../components/AwesomeLink';
 import { BiPlus } from 'react-icons/bi';
 import { useState } from 'react';
 import { CreateLink } from '../components/CreateLink';
+import { useSession } from 'next-auth/react';
 
 const LinksQuery = `
   query {
@@ -23,9 +24,13 @@ const LinksQuery = `
 
 export default function Home() {
 	const [isOpen, setIsOpen] = useState(false);
+	const { status } = useSession();
+
+	const pauseQuery = status === 'authenticated' || status === 'loading';
 
 	const [result, reexecuteQuery] = useQuery({
 		query: LinksQuery,
+		pause: pauseQuery,
 	});
 
 	function closeModal() {
@@ -38,7 +43,7 @@ export default function Home() {
 
 	return (
 		<Layout>
-			<div className="container mx-auto max-w-5xl my-20">
+			<div className="container h-screen mx-auto max-w-5xl">
 				<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 					{result?.data?.links.map((link: Link) => (
 						<AwesomeLink
