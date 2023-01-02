@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LinkSchema } from '../types/schema';
 import z from 'zod';
-import { useMutation } from 'urql';
+import { OperationContext, useMutation } from 'urql';
 import { Link } from '../types/types';
 import { Modal } from './modal';
 
@@ -24,9 +24,13 @@ mutation($input: LinkInput!) {
   `;
 
 const fields = ['title', 'description', 'url', 'imageUrl', 'category'] as const;
-type PropType = { isOpen: boolean; closeModal: () => void };
+type PropType = {
+	isOpen: boolean;
+	closeModal: () => void;
+	reexecuteQuery: (opts?: Partial<OperationContext> | undefined) => void;
+};
 
-export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
+export const CreateLink: FC<PropType> = ({ isOpen, closeModal, reexecuteQuery }) => {
 	const [_, createLink] = useMutation<Link, { input: InputType }>(CreateLinkMutation);
 
 	const {
@@ -50,6 +54,7 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 		} else {
 			reset();
 			closeModal();
+			reexecuteQuery({ requestPolicy: 'cache-and-network' });
 		}
 	};
 

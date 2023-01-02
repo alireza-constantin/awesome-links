@@ -1,13 +1,19 @@
-import React from "react";
-import Header from "./Header";
+import type { Dispatch, FC, ReactNode, SetStateAction } from 'react';
+import Header from './Header';
 
-const Layout = ({ children }) => {
-  return (
-    <div>
-      <Header />
-      {children}
-    </div>
-  );
+type LayoutPropType = {
+	children: ReactNode;
+	fav: boolean;
+	setFav: Dispatch<SetStateAction<boolean>>;
+};
+
+const Layout: FC<LayoutPropType> = ({ children, fav, setFav }) => {
+	return (
+		<div>
+			<Header fav={fav} setFav={setFav} />
+			{children}
+		</div>
+	);
 };
 
 export default Layout;

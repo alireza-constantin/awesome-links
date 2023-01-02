@@ -65,6 +65,7 @@ model Link {
   url         String
   imageUrl    String
   category    String
+  favorite    Boolean? @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   User        User     @relation(fields: [userId], references: [id])

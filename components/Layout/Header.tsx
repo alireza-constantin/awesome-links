@@ -1,11 +1,17 @@
 import Link from 'next/link';
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { BiLink } from 'react-icons/bi';
 import { useRouter } from 'next/router';
+import { clsx } from 'clsx';
 
-const Header = () => {
+type LayoutPropType = {
+	fav: boolean;
+	setFav: Dispatch<SetStateAction<boolean>>;
+};
+
+const Header: FC<LayoutPropType> = ({ fav, setFav }) => {
 	const { data: session, status } = useSession();
 	const [callbackCalled, setCallbackCalled] = useState(false);
 
@@ -39,9 +45,14 @@ const Header = () => {
 					</div>
 					<nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
 						<div className="flex items-center space-x-5">
-							<button>
-								<a className="inline-flex items-center border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
-									My Favorites
+							<button onClick={() => setFav((prev) => !prev)}>
+								<a
+									className={clsx(
+										'inline-flex items-center border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0',
+										!fav && 'bg-gray-200'
+									)}
+								>
+									{fav ? 'All Links' : 'My Favorites'}
 								</a>
 							</button>
 							<button onClick={() => signOut()}>
