@@ -1,24 +1,12 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import type { FC } from 'react';
 import Head from 'next/head';
 import { BiLink } from 'react-icons/bi';
-import { useRouter } from 'next/router';
 import { clsx } from 'clsx';
 
 const Header: FC<{}> = () => {
 	const { data: session, status } = useSession();
-	const [callbackCalled, setCallbackCalled] = useState(false);
-
-	const router = useRouter();
-
-	useEffect(() => {
-		if (!session) {
-			if (callbackCalled) return;
-			router.push('/register');
-			setCallbackCalled(true);
-		}
-	}, [session]);
 
 	return (
 		<>
