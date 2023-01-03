@@ -13,7 +13,9 @@ export const nextAuthOption: NextAuthOptions = {
             }
             return session;
         },
+
     },
+    debug: true,
     adapter: PrismaAdapter(prisma),
     providers: [
         DiscordProvider({

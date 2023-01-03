@@ -10,10 +10,6 @@ import React from 'react';
 function MyApp({ Component, pageProps, router }: AppProps<{ session: Session | null }>) {
 	const LayoutWrapper = router.pathname === '/register' ? React.Fragment : Layout;
 
-	if (pageProps.session === null) {
-		router.push('/register');
-	}
-
 	return (
 		<SessionProvider session={pageProps.session}>
 			<GqlProvider value={client}>

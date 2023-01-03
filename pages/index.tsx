@@ -1,4 +1,3 @@
-import Layout from '../components/Layout';
 import { Link } from '../types/types';
 
 import { useQuery } from 'urql';
@@ -8,7 +7,7 @@ import { useState } from 'react';
 import { CreateLink } from '../components/CreateLink';
 import { useSession } from 'next-auth/react';
 
-const LinksQuery = `#graphql
+export const LinksQuery = `#graphql
   query($favorite: Boolean!) {
     links (favorite: $favorite) {
 		id
@@ -24,7 +23,6 @@ const LinksQuery = `#graphql
 
 export default function Home() {
 	const [isOpen, setIsOpen] = useState(false);
-	const [isFavorite, setIsFavorite] = useState(false);
 	const { status } = useSession();
 
 	const pauseQuery = status === 'unauthenticated' || status === 'loading';
@@ -33,7 +31,7 @@ export default function Home() {
 		query: LinksQuery,
 		pause: pauseQuery,
 		variables: {
-			favorite: isFavorite,
+			favorite: false,
 		},
 	});
 
