@@ -29,8 +29,6 @@ export default function Home() {
 
 	const pauseQuery = status === 'unauthenticated' || status === 'loading';
 
-	console.log(pauseQuery);
-
 	const [result, reexecuteQuery] = useQuery({
 		query: LinksQuery,
 		pause: pauseQuery,
@@ -47,10 +45,8 @@ export default function Home() {
 		setIsOpen(true);
 	}
 
-	console.log(result);
-
 	return (
-		<Layout fav={isFavorite} setFav={setIsFavorite}>
+		<>
 			<div className="container h-screen mx-auto max-w-5xl my-12">
 				{result.data?.links.length === 0 ? (
 					<div className="text-center mt-20">
@@ -85,6 +81,6 @@ export default function Home() {
 				</div>
 			</div>
 			<CreateLink reexecuteQuery={reexecuteQuery} isOpen={isOpen} closeModal={closeModal} />
-		</Layout>
+		</>
 	);
 }

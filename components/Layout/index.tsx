@@ -3,14 +3,12 @@ import Header from './Header';
 
 type LayoutPropType = {
 	children: ReactNode;
-	fav: boolean;
-	setFav: Dispatch<SetStateAction<boolean>>;
 };
 
-const Layout: FC<LayoutPropType> = ({ children, fav, setFav }) => {
+const Layout: FC<LayoutPropType> = ({ children }) => {
 	return (
 		<div>
-			<Header fav={fav} setFav={setFav} />
+			<Header />
 			{children}
 		</div>
 	);

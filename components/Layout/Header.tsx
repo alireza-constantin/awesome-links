@@ -6,12 +6,7 @@ import { BiLink } from 'react-icons/bi';
 import { useRouter } from 'next/router';
 import { clsx } from 'clsx';
 
-type LayoutPropType = {
-	fav: boolean;
-	setFav: Dispatch<SetStateAction<boolean>>;
-};
-
-const Header: FC<LayoutPropType> = ({ fav, setFav }) => {
+const Header: FC<{}> = () => {
 	const { data: session, status } = useSession();
 	const [callbackCalled, setCallbackCalled] = useState(false);
 
@@ -45,15 +40,16 @@ const Header: FC<LayoutPropType> = ({ fav, setFav }) => {
 					</div>
 					<nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
 						<div className="flex items-center space-x-5">
-							<button onClick={() => setFav((prev) => !prev)}>
-								<a
+							<button>
+								<Link
+									href="/favorites"
 									className={clsx(
 										'inline-flex items-center border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0',
-										!fav && 'bg-gray-200'
+										'bg-gray-200'
 									)}
 								>
-									{fav ? 'All Links' : 'My Favorites'}
-								</a>
+									{true ? 'All Links' : 'My Favorites'}
+								</Link>
 							</button>
 							<button onClick={() => signOut()}>
 								<a className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0">
