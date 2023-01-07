@@ -56,16 +56,16 @@ builder.queryType({
         }),
         links: t.field({
             args: {
-                favorite: t.arg.boolean()
+                favorite: t.arg.boolean(),
+                cursor: t.arg.string()
             },
             type: [LinkObject],
             authScopes: {
                 private: true
             },
-            resolve: (_parent, args, ctx) => {
+            resolve: async (_parent, args, ctx) => {
                 const { auth } = ctx;
                 if (args.favorite) {
-                    console.log('inside fav', args)
                     return prisma.link.findMany({
                         where: {
                             userId: auth?.user?.id,
@@ -73,12 +73,14 @@ builder.queryType({
                         }
                     })
                 } else {
-                    console.log('outside fave', args)
                     return prisma.link.findMany({
                         where: {
                             userId: auth?.user?.id
-                        }
+                        },
+
                     })
+
+
                 }
 
             }

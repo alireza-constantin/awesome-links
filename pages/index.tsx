@@ -6,10 +6,11 @@ import { BiPlus } from 'react-icons/bi';
 import { useMemo, useState } from 'react';
 import { CreateLink } from '../components/CreateLink';
 import { useSession } from 'next-auth/react';
+import { Loader } from '../components/Loader';
 
-export const LinksQuery = `#graphql
-  query($favorite: Boolean!) {
-    links (favorite: $favorite) {
+const LinksQuery = `#graphql
+  query($favorite: Boolean!, $cursor: String!) {
+    links (favorite: $favorite, cursor: $cursor) {
 		id
 		title
 		description
@@ -21,7 +22,7 @@ export const LinksQuery = `#graphql
   }
 `;
 
-export default function Home() {
+export default function Index() {
 	const [isOpen, setIsOpen] = useState(false);
 	const { status } = useSession();
 
@@ -32,6 +33,7 @@ export default function Home() {
 		pause: pauseQuery,
 		variables: {
 			favorite: false,
+			cursor: '',
 		},
 		context: useMemo(
 			() => ({
@@ -49,9 +51,7 @@ export default function Home() {
 		setIsOpen(true);
 	}
 
-	console.log('re-renderd');
-	console.log(result.data?.links);
-	console.log(pauseQuery);
+	if (result.fetching) return <Loader />;
 
 	return (
 		<>
@@ -67,22 +67,24 @@ export default function Home() {
 						</button>
 					</div>
 				) : (
-					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-						{result?.data?.links.map((link: Link) => (
-							<AwesomeLink
-								category={link.category}
-								description={link.description}
-								id={link.id}
-								imageUrl={link.imageUrl}
-								title={link.title}
-								url={link.url}
-								key={link.id}
-							/>
-						))}
-					</ul>
+					<>
+						<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+							{result?.data?.links.map((link: Link) => (
+								<AwesomeLink
+									category={link.category}
+									description={link.description}
+									id={link.id}
+									imageUrl={link.imageUrl}
+									title={link.title}
+									url={link.url}
+									key={link.id}
+								/>
+							))}
+						</ul>
+					</>
 				)}
 			</div>
-			<div className="sticky bottom-10 flex justify-end items-center mr-12">
+			<div className="fixed bottom-10 right-3">
 				<div onClick={openModal} className="bg-blue-600 hover:bg-blue-400 rounded-full p-2 cursor-pointer">
 					<BiPlus size={28} className="text-white " />
 				</div>
