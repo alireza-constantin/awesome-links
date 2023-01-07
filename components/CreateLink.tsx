@@ -27,10 +27,9 @@ const fields = ['title', 'description', 'url', 'imageUrl', 'category'] as const;
 type PropType = {
 	isOpen: boolean;
 	closeModal: () => void;
-	reexecuteQuery: (opts?: Partial<OperationContext> | undefined) => void;
 };
 
-export const CreateLink: FC<PropType> = ({ isOpen, closeModal, reexecuteQuery }) => {
+export const CreateLink: FC<PropType> = ({ isOpen, closeModal }) => {
 	const [_, createLink] = useMutation<Link, { input: InputType }>(CreateLinkMutation);
 
 	const {
@@ -54,7 +53,6 @@ export const CreateLink: FC<PropType> = ({ isOpen, closeModal, reexecuteQuery })
 		} else {
 			reset();
 			closeModal();
-			reexecuteQuery({ requestPolicy: 'cache-and-network' });
 		}
 	};
 

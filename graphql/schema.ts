@@ -5,7 +5,6 @@ import { prisma } from '../lib/prisma';
 import { myContext } from '../types/context';
 import validationPlugin from '@pothos/plugin-validation';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
-import z from 'zod';
 import { LinkSchema } from '../types/schema';
 
 
@@ -32,6 +31,7 @@ const builder = new SchemaBuilder<{
 
 
 const LinkObject = builder.objectRef<Link>('Link')
+
 
 LinkObject.implement({
     fields: (t) => ({
@@ -135,7 +135,8 @@ builder.mutationType({
                 return link
             }
         }),
-        deleteLink: t.boolean({
+        deleteLink: t.field({
+            type: LinkObject,
             args: {
                 id: t.arg.string({ required: true })
             },
@@ -152,15 +153,14 @@ builder.mutationType({
                 if (link?.userId !== auth?.user?.id) throw new GraphQLError('Not Authorized')
 
                 try {
-                    await prisma.link.delete({
+                    const link = await prisma.link.delete({
                         where: {
                             id
                         }
                     })
-                    return true
+                    return link
                 } catch (error) {
                     throw new GraphQLError('some thing went wrong please try again')
-                    console.log(error)
                 }
             }
         })

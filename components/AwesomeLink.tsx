@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { OperationContext, useMutation } from 'urql';
+import { useMutation } from 'urql';
 import { FiExternalLink, FiArchive } from 'react-icons/fi';
 import { Modal } from './modal';
 
 const DeleteLinkMutation = `#graphql
 	mutation ($id: String!) {
-		deleteLink(id: $id)
+		deleteLink(id: $id){
+			id
+		}
 	}
 `;
 
@@ -16,18 +18,9 @@ type PropType = {
 	category: string;
 	description: string;
 	id: string;
-	reexecuteQuery: (opts?: Partial<OperationContext> | undefined) => void;
 };
 
-export const AwesomeLink: React.FC<PropType> = ({
-	imageUrl,
-	url,
-	title,
-	category,
-	description,
-	id,
-	reexecuteQuery,
-}) => {
+export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category, description, id }) => {
 	const [_, deleteLink] = useMutation<boolean, { id: string }>(DeleteLinkMutation);
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +36,6 @@ export const AwesomeLink: React.FC<PropType> = ({
 	async function onDelete() {
 		try {
 			await deleteLink({ id });
-			reexecuteQuery({ requestPolicy: 'cache-and-network' });
 			closeModal();
 		} catch (error) {
 			console.log(error);

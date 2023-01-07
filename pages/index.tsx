@@ -3,7 +3,7 @@ import { Link } from '../types/types';
 import { useQuery } from 'urql';
 import { AwesomeLink } from '../components/AwesomeLink';
 import { BiPlus } from 'react-icons/bi';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CreateLink } from '../components/CreateLink';
 import { useSession } from 'next-auth/react';
 
@@ -27,12 +27,18 @@ export default function Home() {
 
 	const pauseQuery = status === 'unauthenticated' || status === 'loading';
 
-	const [result, reexecuteQuery] = useQuery({
+	const [result, _] = useQuery({
 		query: LinksQuery,
 		pause: pauseQuery,
 		variables: {
 			favorite: false,
 		},
+		context: useMemo(
+			() => ({
+				additionalTypenames: ['Link'],
+			}),
+			[]
+		),
 	});
 
 	function closeModal() {
@@ -43,10 +49,14 @@ export default function Home() {
 		setIsOpen(true);
 	}
 
+	console.log('re-renderd');
+	console.log(result.data?.links);
+	console.log(pauseQuery);
+
 	return (
 		<>
-			<div className="container h-screen mx-auto max-w-5xl my-12">
-				{result.data?.links.length === 0 ? (
+			<div className="container px-4 h-screen mx-auto max-w-5xl my-12">
+				{!result || result.data?.links.length === 0 ? (
 					<div className="text-center mt-20">
 						<div className="text-lg text-gray-500 font-semibold">Sorry, There isn't any links</div>
 						<button
@@ -60,7 +70,6 @@ export default function Home() {
 					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 						{result?.data?.links.map((link: Link) => (
 							<AwesomeLink
-								reexecuteQuery={reexecuteQuery}
 								category={link.category}
 								description={link.description}
 								id={link.id}
@@ -78,7 +87,7 @@ export default function Home() {
 					<BiPlus size={28} className="text-white " />
 				</div>
 			</div>
-			<CreateLink reexecuteQuery={reexecuteQuery} isOpen={isOpen} closeModal={closeModal} />
+			<CreateLink isOpen={isOpen} closeModal={closeModal} />
 		</>
 	);
 }
