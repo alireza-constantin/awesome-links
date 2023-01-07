@@ -7,7 +7,6 @@ import validationPlugin from '@pothos/plugin-validation';
 import ScopeAuthPlugin from '@pothos/plugin-scope-auth';
 import { LinkSchema } from '../types/schema';
 
-
 const builder = new SchemaBuilder<{
     Context: {
         auth: myContext
@@ -41,7 +40,8 @@ LinkObject.implement({
         url: t.exposeString('url'),
         imageUrl: t.exposeString('imageUrl'),
         category: t.exposeString('category'),
-        userId: t.exposeString('userId')
+        userId: t.exposeString('userId'),
+        favorite: t.exposeBoolean('favorite')
     })
 })
 
@@ -161,6 +161,38 @@ builder.mutationType({
                         }
                     })
                     return link
+                } catch (error) {
+                    throw new GraphQLError('some thing went wrong please try again')
+                }
+            }
+        }),
+        addToFav: t.field({
+            type: LinkObject,
+            args: {
+                id: t.arg.string({ required: true })
+            },
+            authScopes: {
+                private: true
+            },
+            resolve: async (_root, { id }, { auth }) => {
+                const link = await prisma.link.findUnique({
+                    where: {
+                        id
+                    }
+                })
+
+                if (link?.userId !== auth?.user?.id) throw new GraphQLError('Not Authorized')
+
+                try {
+                    const updatedLink = await prisma.link.update({
+                        where: {
+                            id
+                        },
+                        data: {
+                            favorite: !link?.favorite
+                        }
+                    })
+                    return updatedLink
                 } catch (error) {
                     throw new GraphQLError('some thing went wrong please try again')
                 }

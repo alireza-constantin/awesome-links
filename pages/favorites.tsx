@@ -14,25 +14,23 @@ const LinksQuery = `#graphql
 		imageUrl
 		category
 		userId
+		favorite
 	}
   }
 `;
 
 export default function Favorites() {
-	const router = useRouter();
 	const { status } = useSession();
 
 	const pauseQuery = status === 'unauthenticated' || status === 'loading';
 
-	const [result, reexecuteQuery] = useQuery({
+	const [result, _] = useQuery({
 		query: LinksQuery,
 		pause: pauseQuery,
 		variables: {
 			favorite: true,
 		},
 	});
-
-	console.log('route', router);
 
 	return (
 		<div className="container h-screen mx-auto max-w-5xl my-12">
@@ -46,6 +44,7 @@ export default function Favorites() {
 						title={link.title}
 						url={link.url}
 						key={link.id}
+						fav={link.favorite}
 					/>
 				))}
 			</ul>

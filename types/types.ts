@@ -5,4 +5,5 @@ export type Link = {
     imageUrl: string;
     description: string;
     category: string;
+    favorite: boolean;
 };

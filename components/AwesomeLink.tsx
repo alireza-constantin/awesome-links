@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import { useMutation } from 'urql';
-import { FiExternalLink, FiArchive } from 'react-icons/fi';
+import { FiExternalLink, FiArchive, FiStar, FiHeart } from 'react-icons/fi';
 import { Modal } from './modal';
+import clsx from 'clsx';
 
 const DeleteLinkMutation = `#graphql
 	mutation ($id: String!) {
 		deleteLink(id: $id){
+			id
+		}
+	}
+`;
+
+const AddToFavLinkMutation = `#graphql
+	mutation ($id: String!) {
+		addToFav(id: $id){
 			id
 		}
 	}
@@ -18,10 +27,12 @@ type PropType = {
 	category: string;
 	description: string;
 	id: string;
+	fav: boolean;
 };
 
-export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category, description, id }) => {
-	const [_, deleteLink] = useMutation<boolean, { id: string }>(DeleteLinkMutation);
+export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category, description, id, fav }) => {
+	const [_res, deleteLink] = useMutation<boolean, { id: string }>(DeleteLinkMutation);
+	const [_, addToFav] = useMutation<boolean, { id: string }>(AddToFavLinkMutation);
 
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -42,13 +53,29 @@ export const AwesomeLink: React.FC<PropType> = ({ imageUrl, url, title, category
 		}
 	}
 
+	async function onAddToFav() {
+		try {
+			await addToFav({ id });
+			closeModal();
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return (
 		<li className="shadow  max-w-md mx-auto  rounded">
 			<img src={imageUrl} className="aspect-auto" />
 			<div className="p-5 flex flex-col space-y-2">
 				<div className="flex justify-between items-center">
 					<p className="text-sm text-blue-500">{category}</p>
-					<FiArchive size={20} onClick={openModal} className="text-red-400 cursor-pointer" />
+					<div className="flex gap-3">
+						<FiArchive size={20} onClick={openModal} className="text-red-400 cursor-pointer items-center" />
+						<FiHeart
+							size={20}
+							onClick={onAddToFav}
+							className={clsx(fav ? 'text-red-400' : 'text-gray-400', 'cursor-pointer')}
+						/>
+					</div>
 				</div>
 				<p className="text-lg font-medium">{title}</p>
 				<p className="text-gray-600">{description}</p>

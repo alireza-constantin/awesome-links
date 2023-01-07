@@ -1,5 +1,4 @@
 import { Link } from '../types/types';
-
 import { useQuery } from 'urql';
 import { AwesomeLink } from '../components/AwesomeLink';
 import { BiPlus } from 'react-icons/bi';
@@ -18,6 +17,7 @@ const LinksQuery = `#graphql
 		imageUrl
 		category
 		userId
+		favorite
 	}
   }
 `;
@@ -53,6 +53,8 @@ export default function Index() {
 
 	if (result.fetching) return <Loader />;
 
+	console.log(result.data);
+
 	return (
 		<>
 			<div className="container px-4 h-screen mx-auto max-w-5xl my-12">
@@ -78,6 +80,7 @@ export default function Index() {
 									title={link.title}
 									url={link.url}
 									key={link.id}
+									fav={link.favorite}
 								/>
 							))}
 						</ul>
